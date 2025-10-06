@@ -3,7 +3,7 @@ import os
 import subprocess
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
-import re
+import isodate
 
 load_dotenv()
 
@@ -23,10 +23,6 @@ def load_playlists(file_path):
         for row in reader:
             playlists.append(row['playlist_id'])
     return playlists
-
-from googleapiclient.discovery import build
-from datetime import timedelta
-import isodate
 
 def get_videos_from_playlist(playlist_id):
     youtube = build("youtube", "v3", developerKey=API_KEY)
