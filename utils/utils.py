@@ -16,15 +16,46 @@ TRANSCRIPTS_DIR = os.path.join(DATASET_DIR, 'transcripts')
 CSV_FILE = os.path.join(DATASET_DIR, 'videos.csv')
 PLAYLISTS_CSV = 'utils/playlists.csv'
 
-def load_playlists(file_path):
-    playlists = []
-    with open(file_path, mode='r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            playlists.append(row['playlist_id'])
-    return playlists
+PLAYLIST_IDS = [
+    'PLSQl0a2vh4HDa8_XGhNh5prCT0Z6oAK4R'
+]
+
+def get_playlist_info(playlist_id):
+    youtube = build("youtube", "v3", developerKey=API_KEY)
+    request = youtube.playlists().list(
+        part="snippet",
+        id=playlist_id
+    )
+    response = request.execute()
+    if 'items' in response and len(response['items']) > 0:
+        snippet = response['items'][0]['snippet']
+        subject = snippet.get('title', '').lower()
+        source = snippet.get('channelTitle', '').lower()
+        save_playlist_csv(source, subject, playlist_id)
+        return {'source': source, 'subject': subject}
+    return {}
+
+def save_playlist_csv(source, subject, playlist_id):
+    file = 'utils/playlists.csv'
+    file_exists = os.path.isfile(file)
+    with open(file, mode='a', newline='', encoding='utf-8') as csvfile:
+        fieldnames = ['source', 'subject', 'playlist_id']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        if not file_exists:
+            writer.writeheader()
+        writer.writerow({'source': source, 'subject': subject, 'playlist_id': playlist_id})
+
+# def load_playlists(file_path):
+#     playlists = []
+#     with open(file_path, mode='r', encoding='utf-8') as file:
+#         reader = csv.DictReader(file)
+#         for row in reader:
+#             playlists.append(row['playlist_id'])
+#     return playlists
 
 def get_videos_from_playlist(playlist_id):
+    get_playlist_info(playlist_id)
+    
     youtube = build("youtube", "v3", developerKey=API_KEY)
     videos = []
     next_page_token = None
@@ -118,14 +149,15 @@ def srt_to_text(srt_path):
 
 def main():
     os.makedirs(DATASET_DIR, exist_ok=True)
-    playlists = load_playlists(PLAYLISTS_CSV)
+    # playlists = load_playlists(PLAYLISTS_CSV)
 
-    with open(CSV_FILE, mode='w', newline='', encoding='utf-8') as csvfile:
+    with open(CSV_FILE, mode='a', newline='', encoding='utf-8') as csvfile:
         fieldnames = ['video_id', 'title', 'description', 'date', 'duration', 'playlist_id', 'transcript_file']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
+        
+        # writer.writeheader()
 
-        for playlist_id in playlists:
+        for playlist_id in PLAYLIST_IDS:
             print(f"Processing playlist {playlist_id}...")
             videos = get_videos_from_playlist(playlist_id)
             for video in videos:
