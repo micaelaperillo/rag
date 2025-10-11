@@ -1,8 +1,16 @@
 import chromadb
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 class ChromaManager:
     def __init__(self):
-        self.client = chromadb.PersistentClient(path="./database/chroma_db")
+        # self.client = chromadb.PersistentClient(path="./database/chroma_db")
+        self.client = chromadb.CloudClient(
+            api_key=os.getenv("CHROMA_API_KEY"),
+            tenant=os.getenv("CHROMA_TENANT"),
+            database="videos"
+        )
 
     def create_collection(self, collection_name):
         self.collection = self.client.create_collection(collection_name)
