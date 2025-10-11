@@ -1,1 +1,13 @@
 .env
+__pycache__/
+*.pyc
+.DS_Store
+database/chroma_db/
+database/__pycache__/
+database/.DS_Store
+db_population/__pycache__/
+db_population/.DS_Store
+
+
+
+
