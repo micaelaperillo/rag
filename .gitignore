@@ -7,7 +7,7 @@ database/__pycache__/
 database/.DS_Store
 db_population/__pycache__/
 db_population/.DS_Store
-
-
-
-
+utils/__pycache__/
+utils/.DS_Store
+dataset/*
+dataset/transcripts/*
