@@ -13,7 +13,17 @@ export default function Home() {
     learningGoal: string
   } | null>(null)
 
-  const [selectedVideo, setSelectedVideo] = useState<any>(null)
+  const [selectedVideo, setSelectedVideo] = useState<{
+    video_id: string
+    video_title: string
+    video_date: string
+    video_duration: string
+    playlist_id: string
+    playlist_name: string
+    source: string
+    reason: string
+    level: string
+  } | null>(null)
 
   const handleContextSubmit = (context: {
     age: string
@@ -29,7 +39,17 @@ export default function Home() {
     setSelectedVideo(null)
   }
 
-  const handleVideoSelect = (video: any) => {
+  const handleVideoSelect = (video: {
+    video_id: string
+    video_title: string
+    video_date: string
+    video_duration: string
+    playlist_id: string
+    playlist_name: string
+    source: string
+    reason: string
+    level: string
+  }) => {
     setSelectedVideo(video)
   }
 
