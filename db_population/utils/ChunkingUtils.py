@@ -1,6 +1,6 @@
 from tiktoken import get_encoding
 
-CHUNK_SIZE = 400
+CHUNK_SIZE = 200
 OVERLAP_PERCENTAGE = 0.2
 
 class ChunkingHelper:
