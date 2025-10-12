@@ -16,9 +16,24 @@ TRANSCRIPTS_DIR = os.path.join(DATASET_DIR, 'transcripts')
 CSV_FILE = os.path.join(DATASET_DIR, 'videos.csv')
 PLAYLISTS_CSV = 'utils/playlists.csv'
 
-PLAYLIST_IDS = [
-    'PLSQl0a2vh4HDa8_XGhNh5prCT0Z6oAK4R'
-]
+def get_playlist_ids_from_csv(file_path):
+    """
+    Reads a CSV file where each line contains a playlist ID followed by a comma,
+    and returns a list of these IDs.
+    """
+    playlist_ids = []
+    with open(file_path, mode='r', newline='') as infile:
+        reader = csv.reader(infile)
+        for row in reader:
+            if row:  # Ensure the row is not empty
+                playlist_ids.append(row[0])
+    return playlist_ids
+
+# Provide the path to your CSV file
+csv_file_path = 'dataset/video_list.csv'
+
+# Get the list of IDs from the file
+PLAYLIST_IDS = get_playlist_ids_from_csv(csv_file_path)
 
 def get_playlist_info(playlist_id):
     youtube = build("youtube", "v3", developerKey=API_KEY)
