@@ -19,13 +19,19 @@ class ChromaManager:
     def get_collection(self, collection_name):
         self.collection = self.client.get_collection(collection_name)
 
-    def add_video_chunk(self, video_id, chunk_index, chunk_transcript):
+    def add_video_chunk(self, video_id, video_title, video_date, video_duration, playlist_id, playlist_name, source, chunk_index, chunk_transcript):
         print(f"Adding chunk {chunk_index} for video {video_id} on collection {self.collection.name}")
         self.collection.add(
             ids=[f"{video_id}_{chunk_index}"],
             documents=[chunk_transcript],
             metadatas={
                 "video_id": video_id,
+                "video_title": video_title,
+                "video_date": video_date,
+                "video_duration": video_duration,
+                "playlist_id": playlist_id,
+                "playlist_name": playlist_name,
+                "source": source,
                 "chunk_index": chunk_index
             }
         )
