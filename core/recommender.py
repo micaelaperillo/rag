@@ -132,6 +132,25 @@ class Recommender:
                 return "Error parsing JSON from the LLM"
         return answer
 
+    def _format_reranked_results(self, reranked_list):
+        if not reranked_list or not isinstance(reranked_list, list):
+            return {'documents': [[]], 'metadatas': [[]], 'ids': [[]], 'distances': [[]]}
+
+        documents = []
+        metadatas = []
+        ids = []
+        # Re-ranked results don't have distance, so we can add a placeholder
+        distances = []
+
+        for item in reranked_list:
+            documents.append(item.get('document', ''))
+            metadatas.append(item.get('metadata', {}))
+            # Assuming metadata contains a video_id that can be used as an ID
+            ids.append(item.get('metadata', {}).get('video_id', ''))
+            distances.append(0.0) # Placeholder for distance
+
+        return {'documents': [documents], 'metadatas': [metadatas], 'ids': [ids], 'distances': [distances]}
+
     def recommend_testing(self, query, user_preferences, query_rewriting=False, re_ranking=False):
         chroma_manager = ChromaManager()
         llm = OpenAILLM()
@@ -141,6 +160,9 @@ class Recommender:
         else:
             rewritten_query = query
         results = chroma_manager.search_video_chunks(rewritten_query, limit=5)
+
+        final_results_for_prompt = results
+        chroma_results_for_eval = results
 
         if re_ranking:
             re_ranked_results = self.crossEncoderReRanking(rewritten_query, results)
@@ -152,7 +174,9 @@ class Recommender:
                     unique_video_results.append(result)
                     included_video_ids.add(video_id)
             top_k = 5
-            results = unique_video_results[:top_k]
+            final_results_for_prompt = unique_video_results[:top_k]
+            chroma_results_for_eval = self._format_reranked_results(final_results_for_prompt)
 
-        answer = llm.generate_text(get_prompt(query, results, user_preferences))
-        return {"llm_response": answer, "chroma_results": results}
+
+        answer = llm.generate_text(get_prompt(query, final_results_for_prompt, user_preferences))
+        return {"llm_response": answer, "chroma_results": chroma_results_for_eval}

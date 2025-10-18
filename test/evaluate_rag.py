@@ -82,7 +82,7 @@ test_cases = [
     }
 ]
 
-def run_evaluation(query_rewriting=False):
+def run_evaluation(query_rewriting=False, re_ranking=False):
     
     questions = []
     answers = []
@@ -93,7 +93,7 @@ def run_evaluation(query_rewriting=False):
     for case in test_cases:
         print(f"Running test case: {case['question']}")
         
-        response = recommender.recommend_testing(case["question"], case["user_preferences"], query_rewriting)
+        response = recommender.recommend_testing(case["question"], case["user_preferences"], query_rewriting, re_ranking)
         
         llm_response = response["llm_response"]
         chroma_results = response["chroma_results"]
@@ -129,8 +129,13 @@ def run_evaluation(query_rewriting=False):
     df = score.to_pandas()
     df['video_accuracy'] = video_accuracy_scores
     
+    # Print a clean summary of the metrics
     print("\n--- Evaluation Metrics Summary ---")
-    print(df[['answer_relevancy', 'context_precision', 'context_recall', 'video_accuracy']])
+    print('(query rewriting: ', query_rewriting, ', re-ranking: ', re_ranking, ')')
+    metrics_df = df[['answer_relevancy', 'context_precision', 'context_recall', 'video_accuracy']]
+    print(metrics_df)
+    print("------------------------------------")
+    print(metrics_df.mean())
     print("------------------------------------")
     
     df.to_csv("rag_evaluation_results.csv", index=False)
@@ -141,5 +146,6 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='Run RAG evaluation')
     parser.add_argument('--query-rewriting', action='store_true', help='Enable query rewriting')
-    parser = parser.parse_args()
-    run_evaluation(query_rewriting=parser.query_rewriting)
+    parser.add_argument('--re-ranking', action='store_true', help='Enable re-ranking')
+    args = parser.parse_args()
+    run_evaluation(query_rewriting=args.query_rewriting, re_ranking=args.re_ranking)
