@@ -1,13 +1,12 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Search, ArrowLeft, Play, Clock, Star, TrendingUp, Loader2, Calendar, ExternalLink } from "lucide-react"
 import useRecommend from "@/hooks/useRecommend"
-import { Recommendation } from "@/types/Recommendation"
 import { generateVideoLinks } from "@/lib/video-utils"
+import { useStore } from "@/store/useStore"
 
 interface VideoSearchProps {
   context: {
@@ -22,13 +21,25 @@ interface VideoSearchProps {
 
 
 export function VideoSearch({ context, onReset, onVideoSelect }: VideoSearchProps) {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [hasSearched, setHasSearched] = useState(false)
-  
+  const { 
+    searchQuery, 
+    setSearchQuery, 
+    hasSearched, 
+    setHasSearched, 
+    recommendations, 
+    setRecommendations 
+  } = useStore()
+
   // Convert context to user preferences string
   const userPreferences = `${context.age} years old, ${context.education} education level, interested in ${context.interests.join(', ')}, learning goal: ${context.learningGoal}`
   
-  const { data: recommendations, isLoading, error, mutate: searchRecommendations } = useRecommend()
+  const { data, isLoading, error, mutate: searchRecommendations } = useRecommend()
+
+  useEffect(() => {
+    if (data) {
+      setRecommendations(data)
+    }
+  }, [data, setRecommendations])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()

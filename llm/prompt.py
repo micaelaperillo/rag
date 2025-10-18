@@ -43,29 +43,19 @@ Your task is to:
    - Match the user’s preferred areas of interest.
    - Have clear explanations or demonstrations.
    - Are educationally rich (not just entertainment).
+5. If user query is not related to computer science, software engineering, or mathematics, return an empty video list.
 
----
-
-### Output Format (this will be shown directly to the user):
-Respond in **clear, structured markdown**:
-
-**Top Video Recommendations for You:**
-
-1. **<Video Title>**
-   - **Why it fits you:** <Short explanation linking user query and preferences>
-   - **Level:** <e.g. beginner / intermediate / advanced>
-   - **Duration:** <video duration if available>
-   - **Watch here:** <video link if provided>
-
-2. **<Video Title>**
-   - **Why it fits you:** <Explanation>
-
-*(Add up to 5 recommendations.)*
-
-If relevant, finish with:
->  *Tip:* Based on your interests, you might also explore <related topic or playlist>.
-
-Keep tone personalized, engaging, and educational.
 Avoid hallucinating — only base recommendations on the provided videos.
 
+"""
+
+def get_query_rewriting_prompt(user_query: str):
+   return f"""
+   You are a query rewriting expert. 
+   The user will provide a query about a topic they want to learn about searching for videos related to this topic. Keep in mind this videos are about computer science, software engineering, and mathematics.
+   Your task is to rewrite the user query to be a search query on a vector database, which is loaded with transcripts from 5000 videos from curated sources like FreeCodeCamp, Stanford, MIT, etc.
+   Perform query expansion. This query should contain words related to the topic the user is asking for, so that the vector database can find the most relevant transcript chunks.
+   **User Query:**
+   {user_query}
+   Return the rewritten query only, no other text.
 """
