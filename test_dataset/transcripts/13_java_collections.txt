@@ -1,0 +1,1 @@
+The Java Collections Framework provides a set of interfaces and classes to manage groups of objects. This video covers List, Set, and Map interfaces, and their popular implementations like ArrayList, HashSet, and HashMap.

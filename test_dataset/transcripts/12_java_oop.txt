@@ -1,0 +1,1 @@
+Object-Oriented Programming (OOP) in Java is a fundamental concept. A class is a blueprint from which individual objects are created. An object in Java is an instance of a class, and it has state and behavior.

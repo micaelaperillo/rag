@@ -1,0 +1,1 @@
+Data structures are a way of organizing data in a computer so that it can be used effectively. This video introduces fundamental data structures like Arrays, Linked Lists, Stacks, and Queues in Java.

@@ -1,0 +1,1 @@
+Garbage Collection in Java is the process of reclaiming the runtime unused memory automatically. This video demystifies the garbage collection process in the JVM, explaining how it works and how you can tune it for better performance.

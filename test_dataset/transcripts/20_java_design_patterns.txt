@@ -1,0 +1,1 @@
+Design patterns are proven solutions to common problems in software design. This video covers some of the most important Gang of Four (GoF) design patterns and how to implement them in Java, such as Singleton, Factory, and Observer.
