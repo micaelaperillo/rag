@@ -11,3 +11,4 @@ utils/__pycache__/
 utils/.DS_Store
 dataset/*
 dataset/transcripts/*
+dataset.zip
