@@ -1,32 +1,45 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Play, Clock, Calendar, List, BookOpen, ExternalLink } from "lucide-react"
-import { generateVideoLinks } from "@/lib/video-utils"
+import { Button } from "@/components/ui/button";
+import {
+  ArrowLeft,
+  Play,
+  Clock,
+  Calendar,
+  List,
+  BookOpen,
+  ExternalLink,
+  Sparkles,
+} from "lucide-react";
+import { generateVideoLinks } from "@/lib/video-utils";
 
 interface VideoDetailProps {
   video: {
-    video_id: string
-    video_title: string
-    video_date: string
-    video_duration: string
-    playlist_id: string
-    playlist_name: string
-    source: string
-    reason: string
-    level: string
-  }
-  onBack: () => void
+    video_id: string;
+    video_title: string;
+    video_date: string;
+    video_duration: string;
+    playlist_id: string;
+    playlist_name: string;
+    source: string;
+    reason: string;
+    level: string;
+  };
+  onBack: () => void;
 }
 
 export function VideoDetail({ video, onBack }: VideoDetailProps) {
-  const links = generateVideoLinks(video)
-  
+  const links = generateVideoLinks(video);
+
   return (
     <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
         {/* Back Button */}
-        <Button onClick={onBack} variant="ghost" className="glass-card hover:bg-white/10 text-foreground mb-6">
+        <Button
+          onClick={onBack}
+          variant="ghost"
+          className="glass-card hover:bg-white/10 text-foreground mb-6"
+        >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Search
         </Button>
@@ -50,7 +63,9 @@ export function VideoDetail({ video, onBack }: VideoDetailProps) {
 
             {/* Video Info */}
             <div className="glass-card rounded-2xl p-6 space-y-4">
-              <h1 className="text-3xl font-bold text-foreground text-balance">{video.video_title}</h1>
+              <h1 className="text-3xl font-bold text-foreground text-balance">
+                {video.video_title}
+              </h1>
 
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
@@ -63,17 +78,28 @@ export function VideoDetail({ video, onBack }: VideoDetailProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <ExternalLink className="w-4 h-4" />
-                  <span className="font-mono text-xs">ID: {video.video_id}</span>
+                  <span className="font-mono text-xs">
+                    ID: {video.video_id}
+                  </span>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-white/10">
-                <h2 className="text-lg font-semibold text-foreground mb-2">AI Recommendation Reason</h2>
-                <p className="text-muted-foreground leading-relaxed mb-4">{video.reason}</p>
-                
+                <div className="relative z-10 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-purple-400 drop-shadow-[0_0_4px_rgba(192,132,252,0.7)]" />
+                    <h4 className="font-semibold text-sm bg-gradient-to-r from-purple-300 to-pink-400 bg-clip-text text-transparent">
+                      Why this video is for you
+                    </h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    {video.reason}
+                  </p>
+                </div>
+
                 <div className="flex gap-3">
                   <Button
-                    onClick={() => window.open(links.videoUrl, '_blank')}
+                    onClick={() => window.open(links.videoUrl, "_blank")}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     <ExternalLink className="w-4 h-4 mr-2" />
@@ -81,7 +107,7 @@ export function VideoDetail({ video, onBack }: VideoDetailProps) {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => window.open(links.playlistUrl, '_blank')}
+                    onClick={() => window.open(links.playlistUrl, "_blank")}
                   >
                     <ExternalLink className="w-4 h-4 mr-2" />
                     View Playlist
@@ -102,40 +128,39 @@ export function VideoDetail({ video, onBack }: VideoDetailProps) {
 
               <div className="space-y-3">
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Source</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                    Source
+                  </p>
                   <p className="text-foreground font-medium">{video.source}</p>
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Playlist Name</p>
-                  <div className="inline-flex items-center gap-2 glass-input px-3 py-1.5 rounded-lg">
-                    <BookOpen className="w-4 h-4 text-accent" />
-                    <span className="text-foreground font-medium">{video.playlist_name}</span>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                    Playlist Name
+                  </p>
+                  <div>
+                    <p className="text-foreground font-medium">{video.playlist_name}</p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Level</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                    Level
+                  </p>
                   <p className="text-foreground font-medium">{video.level}</p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Playlist ID</p>
-                  <p className="text-foreground font-mono text-sm">{video.playlist_id}</p>
                 </div>
               </div>
 
-              <Button 
+              <Button
                 className="w-full mt-4 bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl"
-                onClick={() => window.open(links.playlistUrl, '_blank')}
+                onClick={() => window.open(links.playlistUrl, "_blank")}
               >
                 View Full Playlist
               </Button>
             </div>
-
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

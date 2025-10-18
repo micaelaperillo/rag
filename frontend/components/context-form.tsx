@@ -5,14 +5,14 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Sparkles, GraduationCap, Target } from "lucide-react"
+import { Sparkles } from "lucide-react"
 
 interface ContextFormProps {
   onSubmit: (context: {
     age: string
     education: string
     interests: string[]
-    learningGoal: string
+    job: string
   }) => void
 }
 
@@ -20,7 +20,7 @@ const educationLevels = [
   "Elementary School",
   "Middle School",
   "High School",
-  "Undergraduate",
+  "College Undergraduate",
   "Graduate",
   "Professional",
 ]
@@ -28,9 +28,9 @@ const educationLevels = [
 const interestOptions = [
   "Science",
   "Mathematics",
+  "Technology",
   "History",
   "Literature",
-  "Technology",
   "Arts",
   "Music",
   "Languages",
@@ -42,7 +42,7 @@ export function ContextForm({ onSubmit }: ContextFormProps) {
   const [age, setAge] = useState("")
   const [education, setEducation] = useState("")
   const [interests, setInterests] = useState<string[]>([])
-  const [learningGoal, setLearningGoal] = useState("")
+  const [job, setJob] = useState("")
 
   const toggleInterest = (interest: string) => {
     setInterests((prev) => (prev.includes(interest) ? prev.filter((i) => i !== interest) : [...prev, interest]))
@@ -50,12 +50,12 @@ export function ContextForm({ onSubmit }: ContextFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (age && education && interests.length > 0 && learningGoal) {
-      onSubmit({ age, education, interests, learningGoal })
+    if (age && education && interests.length > 0 && job) {
+      onSubmit({ age, education, interests, job })
     }
   }
 
-  const isValid = age && education && interests.length > 0 && learningGoal
+  const isValid = age && education && interests.length > 0 && job
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -66,10 +66,10 @@ export function ContextForm({ onSubmit }: ContextFormProps) {
             <Sparkles className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-5xl font-bold mb-3 text-balance bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">
-            Discover Your Learning Path
+            About You
           </h1>
           <p className="text-lg text-muted-foreground text-balance">
-            Tell us about yourself to get personalized educational content
+            Tell us about yourself to get personalized videos
           </p>
         </div>
 
@@ -78,7 +78,6 @@ export function ContextForm({ onSubmit }: ContextFormProps) {
           {/* Age Input */}
           <div className="space-y-3">
             <Label htmlFor="age" className="text-base font-medium flex items-center gap-2">
-              <GraduationCap className="w-5 h-5 text-primary" />
               Age
             </Label>
             <input
@@ -89,14 +88,14 @@ export function ContextForm({ onSubmit }: ContextFormProps) {
               value={age}
               onChange={(e) => setAge(e.target.value)}
               placeholder="Enter your age"
-              className="w-full px-4 py-3 rounded-xl glass-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+              className="px-4 py-3 rounded-xl glass-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             />
           </div>
 
           {/* Education Level */}
           <div className="space-y-3">
             <Label className="text-base font-medium">Education Level</Label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
               {educationLevels.map((level) => (
                 <button
                   key={level}
@@ -114,12 +113,27 @@ export function ContextForm({ onSubmit }: ContextFormProps) {
             </div>
           </div>
 
+          {/* Current job */}
+          <div className="space-y-3">
+            <Label htmlFor="job" className="text-base font-medium flex items-center gap-2">
+              Current Job
+            </Label>
+            <textarea
+              id="job"
+              value={job}
+              onChange={(e) => setJob(e.target.value)}
+              placeholder="What is your current job? (e.g., 'Software Engineer', 'Data Scientist', 'Teacher')"
+              rows={1}
+              className="w-full px-4 py-3 rounded-xl glass-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
+            />
+          </div>
+
           {/* Interests */}
           <div className="space-y-3">
             <Label className="text-base font-medium">
               Interests <span className="text-muted-foreground text-sm">(Select multiple)</span>
             </Label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
               {interestOptions.map((interest) => (
                 <button
                   key={interest}
@@ -137,29 +151,13 @@ export function ContextForm({ onSubmit }: ContextFormProps) {
             </div>
           </div>
 
-          {/* Learning Goal */}
-          <div className="space-y-3">
-            <Label htmlFor="goal" className="text-base font-medium flex items-center gap-2">
-              <Target className="w-5 h-5 text-primary" />
-              Learning Goal
-            </Label>
-            <textarea
-              id="goal"
-              value={learningGoal}
-              onChange={(e) => setLearningGoal(e.target.value)}
-              placeholder="What would you like to learn? (e.g., 'Understand quantum physics basics' or 'Improve my Spanish speaking skills')"
-              rows={3}
-              className="w-full px-4 py-3 rounded-xl glass-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
-            />
-          </div>
-
           {/* Submit Button */}
           <Button
             type="submit"
             disabled={!isValid}
             className="w-full py-6 text-lg font-semibold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
-            Continue to Search
+            Start Learning
           </Button>
         </form>
       </div>

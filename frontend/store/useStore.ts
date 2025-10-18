@@ -6,7 +6,7 @@ interface UserContext {
   age: string;
   education: string;
   interests: string[];
-  learningGoal: string;
+  job: string;
 }
 
 interface AppState {
