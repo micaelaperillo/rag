@@ -42,5 +42,5 @@ class ChromaManager:
             n_results=limit
         )
 
-    def clean_database(self):
-        self.client.delete_collection("videos")
+    def clean_database(self, collection_name):
+        self.client.delete_collection(collection_name)

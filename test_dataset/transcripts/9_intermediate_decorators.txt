@@ -1,0 +1,66 @@
+Welcome back to our Python series. Today, we're exploring a powerful and elegant feature of Python: decorators. Decorators are a way to modify or enhance the behavior of functions or methods without permanently modifying their source code. They are a great example of Python's support for metaprogramming.
+
+At its core, a decorator is a callable that takes another function as an argument, adds some functionality to it, and returns another function. Decorators are often used for logging, timing, access control, and caching.
+
+Let's start with a simple example. In Python, functions are first-class objects, which means they can be passed around just like any other variable.
+```python
+def say_hello(name):
+    return f"Hello, {name}"
+
+# You can assign a function to a variable
+greet = say_hello
+print(greet("Alice")) # Output: Hello, Alice
+```
+You can also define functions inside other functions.
+```python
+def outer_function(text):
+    def inner_function():
+        print(text)
+    return inner_function
+
+my_func = outer_function("Hello there!")
+my_func() # Output: Hello there!
+```
+This is the foundation upon which decorators are built. Now, let's create our first decorator. We'll create a decorator that logs the name of any function that is called.
+```python
+def my_logger(original_function):
+    def wrapper_function(*args, **kwargs):
+        print(f"Running function: {original_function.__name__}")
+        return original_function(*args, **kwargs)
+    return wrapper_function
+```
+Here, `my_logger` is our decorator. It takes a function, `original_function`, as an argument. It defines a `wrapper_function` which does something before calling the original function. The `*args` and `**kwargs` are used to handle any arguments that the original function might take.
+
+To use this decorator, you can apply it to a function using the `@` symbol, which is syntactic sugar for what's happening under the hood.
+```python
+@my_logger
+def display_info(name, age):
+    print(f"display_info ran with arguments ({name}, {age})")
+
+display_info("John", 25)
+```
+This is equivalent to: `display_info = my_logger(display_info)`. When you run this, you'll see the log message from our decorator before the output of the `display_info` function.
+
+Let's look at another practical example: a decorator to time how long a function takes to run.
+```python
+import time
+
+def timer(original_function):
+    def wrapper_function(*args, **kwargs):
+        start_time = time.time()
+        result = original_function(*args, **kwargs)
+        end_time = time.time()
+        print(f"{original_function.__name__} ran in: {end_time - start_time} sec")
+        return result
+    return wrapper_function
+
+@timer
+def long_running_function(n):
+    for i in range(n):
+        sum([j*j for j in range(10000)])
+
+long_running_function(5)
+```
+When you run this, the `timer` decorator will automatically calculate and print the execution time of `long_running_function`.
+
+Decorators can also be chained, and they can take arguments themselves, which involves another layer of function nesting. While decorators can seem a bit magical at first, they are a powerful tool for writing clean, reusable, and maintainable code by separating concerns. Mastering them will certainly make you a more effective Python programmer.

@@ -1,0 +1,96 @@
+Welcome to this practical guide on working with APIs in Python. API stands for Application Programming Interface, and it's a way for different software applications to communicate with each other. Many websites and services provide APIs that allow developers to access their data and functionality.
+
+Today, we'll learn how to make requests to a web API to retrieve data. The most common type of web API is a RESTful API, which uses standard HTTP methods like GET, POST, PUT, and DELETE. We'll be focusing on making GET requests to fetch data, using the `requests` library, which we've used before. If you haven't installed it, you can do so with `pip install requests`.
+
+Let's use a free and simple API for our example: the JSONPlaceholder API. It provides fake data which is great for testing and prototyping. We'll fetch a list of "todos" from it.
+
+The basic process of interacting with an API is:
+1.  Find the API endpoint URL.
+2.  Make an HTTP request to that endpoint.
+3.  Process the response. The response is often in JSON format.
+
+Here's the code to fetch a list of todos:
+```python
+import requests
+import json
+
+# The API endpoint for todos
+API_ENDPOINT = "https://jsonplaceholder.typicode.com/todos"
+
+def fetch_todos():
+    """
+    Fetches a list of todos from the JSONPlaceholder API.
+    """
+    try:
+        # Make a GET request to the API
+        response = requests.get(API_ENDPOINT)
+
+        # Check if the request was successful
+        response.raise_for_status()  # This will raise an HTTPError if the status is 4xx or 5xx
+
+        # Parse the JSON response
+        todos = response.json()
+        return todos
+
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
+        return None
+
+if __name__ == "__main__":
+    todos_list = fetch_todos()
+
+    if todos_list:
+        # Let's print the first 5 todos
+        for todo in todos_list[:5]:
+            # The json.dumps function is used to pretty-print the JSON
+            print(json.dumps(todo, indent=2))
+            print("-" * 20)
+```
+In this code, `requests.get()` sends the GET request. `response.raise_for_status()` is a good practice to check for errors. `response.json()` conveniently parses the JSON response into a Python list of dictionaries.
+
+Many APIs allow you to pass parameters in the URL to filter the results. For example, we can fetch a specific todo item by its ID.
+```python
+def fetch_todo_by_id(todo_id):
+    """
+    Fetches a single todo item by its ID.
+    """
+    try:
+        # We can construct the URL with the specific ID
+        response = requests.get(f"{API_ENDPOINT}/{todo_id}")
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
+        return None
+
+# Fetch todo with ID 1
+todo_1 = fetch_todo_by_id(1)
+if todo_1:
+    print("Todo with ID 1:")
+    print(json.dumps(todo_1, indent=2))
+```
+
+You can also pass query parameters to filter data. For example, to get all todos for a specific user. The `requests` library makes this easy with the `params` argument.
+```python
+def fetch_todos_for_user(user_id):
+    """
+    Fetches all todos for a given user ID.
+    """
+    try:
+        # The params will be URL-encoded and added to the URL
+        params = {'userId': user_id}
+        response = requests.get(API_ENDPOINT, params=params)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
+        return None
+
+# Fetch todos for user with ID 1
+user_1_todos = fetch_todos_for_user(1)
+if user_1_todos:
+    print(f"\nTodos for user 1 (first {len(user_1_todos)} items):")
+    for todo in user_1_todos[:3]:
+        print(json.dumps(todo, indent=2))
+```
+Working with APIs is a fundamental skill for modern developers. It allows you to integrate third-party services, build rich applications, and automate workflows. The `requests` library in Python makes this process straightforward and enjoyable. Happy coding!
